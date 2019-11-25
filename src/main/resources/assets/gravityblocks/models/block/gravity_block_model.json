@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "gravityblocks:blocks/gravity_block_face",
+    "up": "gravityblocks:blocks/gravity_block_face",
+    "north": "gravityblocks:blocks/gravity_block_face",
+    "east": "gravityblocks:blocks/gravity_block_face",
+    "south": "gravityblocks:blocks/gravity_block_face",
+    "west": "gravityblocks:blocks/gravity_block_face"
+  }
+}

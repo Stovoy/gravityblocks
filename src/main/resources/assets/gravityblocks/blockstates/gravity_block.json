@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "gravityblocks:block/gravity_block_model"
+    }
+  }
+}
