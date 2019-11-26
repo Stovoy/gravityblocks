@@ -12,7 +12,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.ObjectHolder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,27 +39,22 @@ public class GravityBlocks {
     public static class ModEventSubscriber {
         @SubscribeEvent
         public static void onRegisterBlocks(final RegistryEvent.Register<Block> event) {
-            event.getRegistry().registerAll(
-                    setup(new Block(Block.Properties.create(
-                            new Material.Builder(MaterialColor.STONE).build()
-                    ).hardnessAndResistance(1.0F, 1.0F)), "gravity_block")
-            );
+            Block gravityBlock = new Block(
+                    Block.Properties.create(
+                            new Material.Builder(MaterialColor.STONE).build())
+                            .hardnessAndResistance(1.0F, 1.0F));
+            gravityBlock.setRegistryName(new ResourceLocation(MODID, "gravity_block"));
+
+            event.getRegistry().registerAll(gravityBlock);
         }
 
         @SubscribeEvent
         public static void onRegisterItems(final RegistryEvent.Register<Item> event) {
-            event.getRegistry().registerAll(
-                    setup(new BlockItem(ModItems.GRAVITY_BLOCK, new Item.Properties().group(MOD_ITEM_GROUP)), "gravity_block_item")
-            );
-        }
+            BlockItem gravityBlockItem = new BlockItem(
+                    ModItems.GRAVITY_BLOCK, new Item.Properties().group(MOD_ITEM_GROUP));
+            gravityBlockItem.setRegistryName(new ResourceLocation(MODID, "gravity_block_item"));
 
-        static <T extends IForgeRegistryEntry<T>> T setup(final T entry, final String name) {
-            return setup(entry, new ResourceLocation(MODID, name));
-        }
-
-        static <T extends IForgeRegistryEntry<T>> T setup(final T entry, final ResourceLocation registryName) {
-            entry.setRegistryName(registryName);
-            return entry;
+            event.getRegistry().registerAll(gravityBlockItem);
         }
     }
 

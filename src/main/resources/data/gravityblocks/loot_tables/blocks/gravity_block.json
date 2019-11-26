@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "name": "gravityblocks:gravity_block_loot",
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "gravityblocks:gravity_block_item"
+        }
+      ]
+    }
+  ]
+}
