@@ -1,6 +1,7 @@
 package com.stovoy.gravityblocks;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
 import net.minecraft.item.BlockItem;
@@ -8,8 +9,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.IChunk;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
@@ -55,6 +61,52 @@ public class GravityBlocks {
             gravityBlockItem.setRegistryName(new ResourceLocation(MODID, "gravity_block_item"));
 
             event.getRegistry().registerAll(gravityBlockItem);
+        }
+    }
+
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, modid = MODID)
+    public static class ForgeEventSubscriber {
+        @SubscribeEvent
+        public static void onServerTick(TickEvent.ServerTickEvent event) {
+            LOGGER.info("TICK");
+
+            // TODO: Do this scan once, cache location of gravity blocks, update cache as blocks placed/removed.
+
+            for (ChunkStore chunkStore : DataStore.chunks.values()) {
+                IChunk chunk = chunkStore.chunk;
+                ChunkPos chunkPos = chunk.getPos();
+                for (double x = chunkPos.x; x <= chunkPos.x + 15; x++) {
+                    for (double y = 0; y <= 255; y++) {
+                        for (double z = chunkPos.z; z <= chunkPos.z + 15; z++) {
+                            BlockPos actualPosition = new BlockPos(x, y, z);
+                            BlockState state = chunk.getBlockState(actualPosition);
+                            if (state.getBlock().getRegistryName() == ModItems.GRAVITY_BLOCK.getRegistryName()) {
+                                LOGGER.info("GRAVITY BLOCK AT {} {} {}", x, y, z);
+                                // TODO: Get entities in a certain radius, update their vectors in the DataStore
+                            }
+                        }
+                    }
+                }
+            }
+
+            // TODO: Get each entity that was affected, apply their vectors from the DataStore.
+        }
+
+        @SubscribeEvent
+        public static void onChunkLoad(ChunkEvent.Load event) {
+            // TODO: Handle chunks across different worlds (overworld, nether, etc).
+            IChunk chunk = event.getChunk();
+            ChunkPos chunkPos = chunk.getPos();
+            if (!DataStore.chunks.containsKey(chunkPos)) {
+                DataStore.chunks.put(chunkPos, new ChunkStore(chunk));
+            }
+        }
+
+        @SubscribeEvent
+        public static void onChunkUnload(ChunkEvent.Unload event) {
+            IChunk chunk = event.getChunk();
+            ChunkPos chunkPos = chunk.getPos();
+            DataStore.chunks.remove(chunkPos);
         }
     }
 

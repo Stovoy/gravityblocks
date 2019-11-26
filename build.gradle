@@ -77,7 +77,7 @@ minecraft {
             args '--mod', 'gravityblocks', '--all', '--output', file('src/generated/resources/')
 
             mods {
-                examplemod {
+                gravityblocks {
                     source sourceSets.main
                 }
             }
